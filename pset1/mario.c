@@ -14,12 +14,11 @@ void checkInt(void)
     int height = get_int();
     char pound = '#';
     
-    if (height > 0 && height <= 23)
+    if (height > 0 && height <= 23) //check if numbers within given range
     {
-        
         for (int i = 0; i < height; i++) //loop for each row
         {
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < height; j++) //first half of pyramid
             {
                 if ((j + 1) >= (height - i))
                 {
@@ -33,7 +32,7 @@ void checkInt(void)
             
             printf("  "); //add double space
             
-            for (int j = 0; j < height; j++)
+            for (int j = 0; j < height; j++) //second half of pyramid 
             {
                 if(j <= i)
                 {
@@ -59,6 +58,6 @@ void checkInt(void)
     else
     {
         printf("Retry: ");
-        checkInt();
+        checkInt(); //recall function if number invalid
     }
 }
