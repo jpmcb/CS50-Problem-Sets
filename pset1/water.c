@@ -7,5 +7,5 @@ int main(void)
     int minutes = get_int();
     
     printf("Minutes: %i\n", minutes);
-    printf("Bottles: %i\n", (192 * minutes)/16);
+    printf("Bottles: %i\n", (192 * minutes)/16); //equation to determine how much water is being used
 }

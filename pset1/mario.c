@@ -14,13 +14,13 @@ void checkInt(void)
     int height = get_int();
     char pound = '#';
     
-    if (height > 0 && height <= 23) //check if numbers within given range
+    if (height > 0 && height < 23) //check if numbers within given range
     {
-        for (int i = 0; i < height; i++) //loop for each row
+        for (int i = 0; i < height; i++) //loop for each row of pyramid
         {
             for (int j = 0; j < height; j++) //first half of pyramid
             {
-                if ((j + 1) >= (height - i))
+                if ((j + 1) >= (height - i)) //determines spacing of pound
                 {
                     printf("%c", pound);
                 }
@@ -30,7 +30,7 @@ void checkInt(void)
                 }
             }
             
-            printf("  "); //add double space
+            printf("  "); //add double space pipe for mario to go find coins
             
             for (int j = 0; j < height; j++) //second half of pyramid 
             {
