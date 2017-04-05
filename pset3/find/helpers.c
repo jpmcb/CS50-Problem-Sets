@@ -5,6 +5,7 @@
  */
  
 #include <cs50.h>
+#include <stdio.h>
 
 #include "helpers.h"
 
@@ -58,6 +59,8 @@ bool search(int value, int values[], int n)
             return false;
         }
     }
+    
+    return false;
 }
 
 /**
@@ -67,18 +70,24 @@ bool search(int value, int values[], int n)
 void sort(int values[], int n)
 {
     // TODO: implement an O(n^2) sorting algorithm
-    int index = 0;
     
-    for(int i = (n - 1); i < 0; i--)
-    {
-        for(int j = 1; j < i; j++)
+        for(int i = n; i > 0; i--)
         {
-            if (values[count] < values[j + 1])
+            
+            printf("Im in the first loop, n is %d\n", n);
+            
+            for(int bubble = 0, j = 1; j < i; j++, bubble++)
             {
+                int bubVal = values[bubble];
+                int testVal = values[j];
                 
+                if (values[bubble] > values[j])
+                {
+                    printf("In the sort deepest loop\n");
+                
+                    values[j] = bubVal;
+                    values[bubble] = testVal;
+                }
             }
         }
-    }
-    
-    return;
 }
