@@ -32,10 +32,10 @@ int d;
 // prototypes
 void clear(void);
 void greet(void);
-void init(void);
-void draw(void);
-bool move(int tile);
-bool won(void);
+void init(int n);
+void draw(int n);
+bool move(int tile, int n);
+bool won(int n);
 
 int main(int argc, string argv[])
 {
@@ -66,7 +66,7 @@ int main(int argc, string argv[])
     greet();
 
     // initialize the board
-    init();
+    init(d);
 
     // accept moves until game is won
     while (true)
@@ -75,7 +75,7 @@ int main(int argc, string argv[])
         clear();
 
         // draw the current state of the board
-        draw();
+        draw(d);
 
         // log the current state of the board (for testing)
         for (int i = 0; i < d; i++)
@@ -93,9 +93,10 @@ int main(int argc, string argv[])
         fflush(file);
 
         // check for win
-        if (won())
+        if (won(d))
         {
             printf("ftw!\n");
+            return 0;
             break;
         }
 
@@ -114,7 +115,7 @@ int main(int argc, string argv[])
         fflush(file);
 
         // move if possible, else report illegality
-        if (!move(tile))
+        if (!move(tile, d))
         {
             printf("\nIllegal move.\n");
             usleep(500000);
@@ -154,26 +155,164 @@ void greet(void)
  * Initializes the game's board with tiles numbered 1 through d*d - 1
  * (i.e., fills 2D array with values but does not actually print them).  
  */
-void init(void)
+void init(int n)
 {
-    // TODO
+    
+    int count = ((n * n) - 1); //count is decremented as the 2d array is built, boardSet helps determine if 1 & 2 should be switched
+    bool boardSet;
+    
+    if(count % 2 != 0)
+    {
+        boardSet = true; //if there are an even number of tiles, 1 & 2 should be switched on the board
+    }
+    
+    for(int i = 0; i < n; i++) //first loop for rows
+    {
+        for(int j = 0; j < n; j++) //second loop for columns
+        {
+            if(count > 2) //before count has reached 2
+            {
+                board[i][j] = count;
+                count--;
+            }
+            else if(count == 2) //determine if 1 & 2 need to be switched
+            {
+                if(boardSet)
+                {
+                    board[i][j + 1] = count;
+                    count--;
+                }
+                else
+                {
+                    board[i][j] = count;
+                    count--;
+                }
+            }
+            else if(count == 1)
+            {
+                if(boardSet)
+                {
+                    board[i][j - 1] = count;
+                    count--;
+                }
+                else
+                {
+                    board[i][j] = count;
+                    count--;
+                }
+            }
+            else
+            {
+                board[i][j] = 0; // zero to be used for empty tile, underscore char used in zero's place
+            }
+        }
+    }
 }
 
 /**
  * Prints the board in its current state.
  */
-void draw(void)
+void draw(int n)
 {
-    // TODO
+    
+    for(int i = 0; i < n; i++) //print rows
+    {
+        for(int j = 0; j < n; j++) //print columns
+        {
+            if(board[i][j] == 0)
+            {
+                printf("%c    ", '_');
+            }
+            else
+            {
+                if(board[i][j] < 10)
+                {
+                    printf("%d    ", board[i][j]); //extra formated space for proper spacing
+                }
+                else 
+                {
+                    printf("%d   ", board[i][j]);
+                }
+            }
+        }
+        
+        printf("\n\n");
+    }
+    
+    printf("\n");
 }
 
 /**
  * If tile borders empty space, moves tile and returns true, else
  * returns false. 
  */
-bool move(int tile)
+bool move(int tile, int n)
 {
-    // TODO
+    if(tile > ((n * n) - 1) || tile < 1) //check to ensure valid number & prevent crash
+    {
+        return false;
+    }
+    
+    int i_index, j_index, nineI_index, nineJ_index;
+    
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            if(tile == board[i][j]) //linear search to find tile in array
+            {
+                i_index = i;
+                j_index = j;
+            }
+            if(0 == board[i][j]) //linear search to find empty tile in array
+            {
+                nineI_index = i;
+                nineJ_index = j;
+            }
+        }
+    }
+    
+        
+    if(i_index == nineI_index) //if selected tile and empty tile are in the same ROW ...
+    {
+        if((j_index + 1) == nineJ_index) //and they are one space away from eachother ...
+        {
+            board[nineI_index][nineJ_index] = board[i_index][j_index]; //they will be moved!
+            board[i_index][j_index] = 0;
+            return true;
+        }
+        else if((j_index - 1) == nineJ_index)
+        {
+            board[nineI_index][nineJ_index] = board[i_index][j_index];
+            board[i_index][j_index] = 0;
+    
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else if(j_index == nineJ_index) //if selected tile and empty tile are in the same COLUMN ...
+    {
+        if((i_index + 1) == nineI_index) //and they are one space away from eachother ...
+        {
+            board[nineI_index][nineJ_index] = board[i_index][j_index]; //they will be moved!
+            board[i_index][j_index] = 0;
+            return true;
+        }
+        else if((i_index - 1)== nineI_index)
+        {
+            board[nineI_index][nineJ_index] = board[i_index][j_index];
+            board[i_index][j_index] = 0;
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
+    
     return false;
 }
 
@@ -181,8 +320,31 @@ bool move(int tile)
  * Returns true if game is won (i.e., board is in winning configuration), 
  * else false.
  */
-bool won(void)
+bool won(int n)
 {
-    // TODO
+    int winning = 1; //count through the array to ensure proper order
+
+    for(int i = 0; i < n; i++) //Rows
+    {
+        for(int j = 0; j < n; j++) //Columns
+        {
+            if(winning == board[i][j]) //if winning count and array match ...
+            {
+                if(winning == ((n * n) - 1) ) //and the winning count has reached the last number in the game ...
+                {
+                    return true; //You win!
+                }
+                else
+                {
+                    winning++;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+    
     return false;
 }
