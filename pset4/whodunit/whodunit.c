@@ -64,6 +64,22 @@ int main(int argc, char *argv[])
         {
             RGBTRIPLE triple;
             fread(&triple, sizeof(RGBTRIPLE), 1, input);
+            
+            if(triple.rgbtRed == 255)
+            {
+                triple.rgbtBlue = 255;
+                triple.rgbtGreen = 255;
+                triple.rgbtRed = 255;
+            }
+            else if(triple.rgbtRed != 255)
+            {
+                //change the text in the image to black
+                
+                triple.rgbtBlue = 0;
+                triple.rgbtGreen = 0;
+                triple.rgbtRed = 0;
+            }
+            
             fwrite(&triple, sizeof(RGBTRIPLE), 1, output);
         }
         
