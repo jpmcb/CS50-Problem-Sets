@@ -10,7 +10,7 @@ int main(int argc, char *args[])
         return 1;
     }
     
-    int sizeFac = atoi(args[1]); //convert to a floating point?? for valuse less than 0?
+    int sizeFac = atof(args[1]);
     char *input = args[2];
     char *output = args[3];
     
